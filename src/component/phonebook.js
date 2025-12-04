@@ -26,16 +26,25 @@ const Persons = (props) => {
   return (
     <div>
       {props.personsToShow.map((person) => 
-        <Person key={person.name} person={person} />
+        <Person key={person.name} person={person} deletePerson={props.deletePerson} />
       )}
     </div>
   )
 }
 
-const Person = (props) => {
+const Person = ({ person, deletePerson }) => {
+  const handleDelete = () => {
+    if (window.confirm(`Are you sure you want to delete ${person.name}?`)) {
+      deletePerson(person.id)
+    }
+  }
+
   return (
     <div>
-      {props.person.name} {props.person.number}
+      {person.name} {person.number}
+      <button onClick={handleDelete}>
+        delete
+      </button>
     </div>
   )
 }

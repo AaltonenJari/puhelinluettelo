@@ -1,12 +1,16 @@
 import { useState, useEffect } from 'react'
 import { Filter, PersonForm, Persons } from './component/phonebook'
 import personService from './services/persons'
+import Notification from './component/Notification'
+import NotificationError from './component/NotificationError'
 
 const App = () => {
   const [persons, setPersons] = useState([])
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [newFilter, setNewFilter] = useState('')
+  const [notificationMessage, setNotificationMessage] = useState(null)
+  const [errorMessage, setErrorMessage] = useState(null)
 
   useEffect(() => {
     personService
@@ -32,9 +36,18 @@ const App = () => {
             setPersons(persons.map(person => person.id !== found.id ? person : returnedPerson))
             setNewName('')
             setNewNumber('')
+            setNotificationMessage(`Updated ${newName}'s number`)
+            setTimeout(() => {
+              setNotificationMessage(null)
+            }, 5000)
           })
           .catch(error => {
-            console.log('Error updating person:', error)
+            const errorMessage = `Information of ${newName} has already been removed from server`
+            console.log(errorMessage)
+            setErrorMessage(errorMessage)
+            setTimeout(() => {
+              setErrorMessage(null)
+            }, 5000)
           })
       }
       setNewName('')
@@ -46,11 +59,20 @@ const App = () => {
       .create(personObject)
       .then(returnedPerson => {
         setPersons(persons.concat(returnedPerson))
+        setNotificationMessage(`Added ${returnedPerson.name}`)
+        setTimeout(() => {
+          setNotificationMessage(null)
+        }, 5000)
         setNewName('')
         setNewNumber('')
       })
       .catch(error => {
-        console.log('Error adding person:', error)
+        const errorMessage = `Failed to add ${newName}`
+        console.log(errorMessage)
+        setErrorMessage(errorMessage)
+        setTimeout(() => {
+          setErrorMessage(null)
+        }, 5000)
       })
   }
 
@@ -59,9 +81,18 @@ const App = () => {
       .remove(id)
       .then(() => {
         setPersons(persons.filter(person => person.id !== id))
+        setNotificationMessage(`Deleted a person ${persons.find(p => p.id === id)?.name}`)
+        setTimeout(() => {
+          setNotificationMessage(null)
+        }, 5000)
       })
       .catch(error => {
-        console.log('Error deleting person:', error)
+        const errorMessage = `Failed to delete person`
+        console.log(errorMessage)
+        setErrorMessage(errorMessage)
+        setTimeout(() => {
+          setErrorMessage(null)
+        }, 5000)
       })
   }
 
@@ -84,6 +115,8 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification message={notificationMessage} />
+      <NotificationError message={errorMessage} />
       <Filter newFilter={newFilter} handleFilterChange={handleFilterChange} />
       <h3>add a new</h3>
       <PersonForm

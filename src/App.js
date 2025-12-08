@@ -25,7 +25,18 @@ const App = () => {
 
     const found = persons.find(person => person.name === newName)
     if (found) {
-      alert(`${newName} is already added to phonebook`)
+      if (window.confirm(`${newName} is already added to phonebook, replace the old number with a new one?`)) {
+        personService
+          .update(found.id, { ...found, number: newNumber })
+          .then(returnedPerson => {
+            setPersons(persons.map(person => person.id !== found.id ? person : returnedPerson))
+            setNewName('')
+            setNewNumber('')
+          })
+          .catch(error => {
+            console.log('Error updating person:', error)
+          })
+      }
       setNewName('')
       setNewNumber('')
       return
@@ -53,6 +64,7 @@ const App = () => {
         console.log('Error deleting person:', error)
       })
   }
+
   const handleNameChange = (event) => {
     setNewName(event.target.value)
   }

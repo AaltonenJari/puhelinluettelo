@@ -1,20 +1,29 @@
 import axios from "axios";
-const baseUrl = '/api/notes'  // React + proxy hoitaa localhost:3001:n
+const baseUrl = '/api/persons'  // React + proxy hoitaa localhost:3001:n
 
 const getAll = () => {
-  return axios.get(baseUrl).then(response => response.data);
+  const request = axios.get(baseUrl)
+  return request.then(response => response.data);
 }
 
 const create = (newPerson) => {
-  return axios.post(baseUrl, newPerson).then(response => response.data);
+  const request = axios.post(baseUrl, newPerson)
+  return request.then(response => response.data);
 }
 
 const update = (id, updatedPerson) => {
-  return axios.put(`${baseUrl}/${id}`, updatedPerson).then(response => response.data);
+  const request = axios.put(`${baseUrl}/${id}`, updatedPerson)
+  return request.then(response => response.data);
 }
 
 const remove = (id) => {
-  return axios.delete(`${baseUrl}/${id}`).then(response => response.data);
+  const request = axios.delete(`${baseUrl}/${id}`)  
+  return request.then(response => response.data);
 }
-    
-export default { getAll, create, update, remove };
+
+export default {
+  getAll: getAll, 
+  create: create, 
+  update: update,
+  remove: remove
+}

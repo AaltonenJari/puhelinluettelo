@@ -1,5 +1,5 @@
 import axios from "axios";
-const baseUrl = 'http://localhost:3001/api/persons'
+const baseUrl = '/api/notes'  // React + proxy hoitaa localhost:3001:n
 
 const getAll = () => {
   return axios.get(baseUrl).then(response => response.data);
